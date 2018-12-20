@@ -12,7 +12,7 @@ import sys
 """ Values initialisation """
 now = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) #get timestamp for logging
 logPath = "logPi1.txt" #set log path
-ID = 1 #set IP addresses
+ID = 1 #set client ID
 if(ID == 1):
     this_wifi_ip = "192.168.1.1"
     this_eth_ip = "192.168.0.1"
@@ -111,7 +111,7 @@ if __name__=="__main__":
         if(choice == "q"):  #quit the script
             break
 
-        if(choice == "s"):
+        if(choice == "s"): #when user choice is "send"
             message = str(input("Enter message: "))
             #generate randomly initalisation vector needed for AES
             iv = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for x in range(16))
@@ -126,6 +126,8 @@ if __name__=="__main__":
             sleep(0.5)
             #send the ciphered message
             sendMessage(encoded)
+            
+        #check for possible errors or mismatches
         try:
             controlWifi = bytes(listen(this_wifi_ip))
         except socket.error as err:
@@ -176,6 +178,7 @@ if __name__=="__main__":
             log.write(logMessage+"\n")
             log.close()
         
+        #if every condition is filled, message is displayed on the console.
         if (responseEtherIV == responseWifiIV):
             if(responseEther == responseWifi):
                 checkEther = getChecksum(responseEther)
